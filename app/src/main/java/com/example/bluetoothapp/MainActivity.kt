@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +22,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private inner class ConnectThread(device: BluetoothDevice) : Thread() {
+    /*private inner class ConnectThread(device: BluetoothDevice) : Thread() {
 
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             device.createRfcommSocketToServiceRecord(UUID.fromString("dbbf3428-a69c-458b-85a8-5ca2de5b673c"))
@@ -50,10 +51,11 @@ class MainActivity : AppCompatActivity() {
                 Log.e("TAG", "Could not close the client socket", e)
             }
         }
-    }
+    }*/
 
-    lateinit var bt: BluetoothAdapter
-    private val receiver = object : BroadcastReceiver() {
+    lateinit var bt : BluetoothAdapter
+    lateinit var btSock : BluetoothSocket
+    /*private val receiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
             val action: String? = intent.action
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+    }*/
 
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -78,9 +80,10 @@ class MainActivity : AppCompatActivity() {
 
         val rvListeBluetooth = findViewById<RecyclerView>(R.id.rvListeBluetooth)
         val btn1 = findViewById<Button>(R.id.btn1)
+        val tvTexte = findViewById<TextView>(R.id.tvTexte)
         bt = BluetoothAdapter.getDefaultAdapter()
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        registerReceiver(receiver, filter)
+        //registerReceiver(receiver, filter)
 
         if (bt == null) {
             Toast.makeText(
@@ -100,8 +103,9 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Aucun appareil Bluetooth détecté", Toast.LENGTH_SHORT).show()
         }
 
+
         rvListeBluetooth.layoutManager = LinearLayoutManager(this)
-        rvListeBluetooth.adapter = BtAdapter(devices)
+        rvListeBluetooth.adapter = BtAdapter(devices, tvTexte)
 
         btn1.setOnClickListener {
             if (bt.startDiscovery()) {
@@ -112,14 +116,30 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /*var compteur = true
+        for(i in devices){
+            if(compteur){
+                btSock = i.createRfcommSocketToServiceRecord(UUID.fromString("dbbf3428-a69c-458b-85a8-5ca2de5b673c"))
+                btSock.connect()
+                compteur = false
+            }
+        }*/
+
+        /*if (btSock.isConnected){
+            var inputS = btSock.inputStream
+            Toast.makeText(this, inputS.read(), Toast.LENGTH_SHORT).show()
+        }*/
+
+
+
 
     }
 
-    override fun onDestroy() {
+    /*override fun onDestroy() {
         super.onDestroy()
 
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver)
 
-    }
+    }*/
 }
