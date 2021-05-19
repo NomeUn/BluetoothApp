@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket
 import android.graphics.Color
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,11 +68,19 @@ class BtAdapter(
                     GlobalScope.launch {
                         var buffer = ByteArray(256)
                         var bytes:Int
+                        var msg = ""
                         while (true){
                             try {
                                 bytes = inputS.read(buffer)
-                                var msg = String(buffer,0, bytes)
-                                tvTexte.setText(tvTexte.text.toString() + msg)
+                                var temp = String(buffer,0, bytes)
+                                msg += temp
+                                if(msg.length > 10){
+                                    Log.d("bt", msg)
+                                    tvTexte.setText(msg)
+                                    msg = ""
+                                }
+
+
                                 //Toast.makeText(context, msg,Toast.LENGTH_SHORT).show()
                             }
                             catch (e : Exception){
